@@ -10,7 +10,9 @@ var urls = db.get('urls');
 
 app.get('/api/shorten/*', function(req, res) {
     var url = req.originalUrl.replace('/api/shorten/', '');
-    var shortenedUrl = shortHash(url);
+    var baseUrl = req.protocol + '://' 
+        + req.get('host') + '/';
+    var shortenedUrl = baseUrl + shortHash(url);
 
     urls.insert({
         'original_url': url,
