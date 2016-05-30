@@ -8,19 +8,38 @@ app.set('port', 3000);
 var db = monk('localhost:27017/url-shortener');
 var urls = db.get('urls');
 
+// Return JSON result containing original URL and shortened result
 app.get('/api/shorten/*', function(req, res) {
     var url = req.originalUrl.replace('/api/shorten/', '');
     var baseUrl = req.protocol + '://' 
         + req.get('host') + '/';
-    var shortenedUrl = baseUrl + shortHash(url);
+    var hash = shortHash(url);
 
     urls.insert({
         'original_url': url,
-        'shortened_url': shortenedUrl
+        'hash': hash
     });
     res.status(200).json({
         'original_url': url,
-        'shortened_url': shortenedUrl
+        'shortened_url': baseUrl + hash
+    });
+});
+
+// Resolve short URL and redirect to original URL
+app.get('/:hash', function(req, res) {
+    urls.find({ hash: req.params.hash }, function(err, docs) {
+        if (err) {
+            res.status(500).json({ error: 'Internal Server Error.' });
+        }
+        else {
+            if (docs.length === 0) {
+                res.status(404).json({ error: 'URL not found.' });
+            }
+            else {
+                var url = docs[0].original_url;
+                res.redirect(url);
+            }
+        }
     });
 });
 
