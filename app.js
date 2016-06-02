@@ -8,6 +8,11 @@ app.set('port', 3000);
 var db = monk('localhost:27017/url-shortener');
 var urls = db.get('urls');
 
+// Return index page
+app.get('/', function(req, res) {
+    res.status(200).sendFile(__dirname + '/index.html');
+});
+
 // Return JSON result containing original URL and shortened result
 app.get('/api/shorten/*', function(req, res) {
     var url = req.originalUrl.replace('/api/shorten/', '');
