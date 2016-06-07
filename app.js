@@ -23,10 +23,18 @@ app.get('/api/shorten/*', function(req, res) {
     urls.insert({
         'original_url': url,
         'hash': hash
-    });
-    res.status(200).json({
-        'original_url': url,
-        'shortened_url': baseUrl + hash
+    }, function(err, result) {
+        if (err) {
+            res.status(500).json({
+                error: 'Failed to shorten URL. Please try again.'
+            });
+        }
+        else {
+            res.status(200).json({
+                original_url: url,
+                shortened_url: baseUrl + hash
+            });
+        }
     });
 });
 
