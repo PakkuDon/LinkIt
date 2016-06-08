@@ -8,6 +8,9 @@ app.set('port', 3000);
 var db = monk('localhost:27017/url-shortener');
 var urls = db.get('urls');
 
+// Serve static files
+app.use(express.static('public'));
+
 // Return index page
 app.get('/', function(req, res) {
     res.status(200).sendFile(__dirname + '/index.html');
