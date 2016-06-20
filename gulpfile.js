@@ -19,6 +19,13 @@ gulp.task('bundle', function() {
         .pipe(gulp.dest('./public/js'));
 });
 
+gulp.task('client', function() {
+    return gulp.src('client.js')
+        .pipe(uglify())
+        .pipe(concat('client.js'))
+        .pipe(gulp.dest('./public/js'));
+});
+
 gulp.task('styles', function() {
     return gulp.src('bower_components/bootstrap/dist/css/bootstrap.min.css')
         .pipe(concat('style.css'))
@@ -26,4 +33,4 @@ gulp.task('styles', function() {
         .pipe(gulp.dest('./public/css'));
 });
 
-gulp.task('default', ['vendor', 'bundle', 'styles']);
+gulp.task('default', ['vendor', 'bundle', 'client', 'styles']);
