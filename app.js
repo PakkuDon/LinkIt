@@ -1,4 +1,5 @@
 var express = require('express');
+var bodyParser = require('body-parser');
 var shortHash = require('short-hash');
 var monk = require('monk');
 
@@ -8,19 +9,22 @@ app.set('port', 3000);
 var db = monk('localhost:27017/url-shortener');
 var urls = db.get('urls');
 
-// Serve static files
+// Middleware
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 app.use(express.static('public'));
 
-// Return index page
+// Index page
 app.get('/', function(req, res) {
     res.status(200).sendFile(__dirname + '/index.html');
 });
 
 // Return JSON result containing original URL and shortened result
-app.get('/api/shorten/*', function(req, res) {
-    var url = req.originalUrl.replace('/api/shorten/', '');
-    var baseUrl = req.protocol + '://' 
-        + req.get('host') + '/';
+app.post('/api/urls/', function(req, res) {
+    var url = req.body.url;
+    var baseUrl = `${req.protocol}://${req.get('host')}/`
     var hash = shortHash(url);
 
     urls.insert({
@@ -28,15 +32,17 @@ app.get('/api/shorten/*', function(req, res) {
         'hash': hash
     }, function(err, result) {
         if (err) {
-            res.status(500).json({
-                error: 'Failed to shorten URL. Please try again.'
-            });
+            res.status(500)
+              .json({
+                  error: 'Failed to shorten URL. Please try again.'
+              });
         }
         else {
-            res.status(200).json({
-                original_url: url,
-                shortened_url: baseUrl + hash
-            });
+            res.status(200)
+              .json({
+                  original_url: url,
+                  shortened_url: baseUrl + hash
+              });
         }
     });
 });
@@ -45,11 +51,13 @@ app.get('/api/shorten/*', function(req, res) {
 app.get('/:hash', function(req, res) {
     urls.find({ hash: req.params.hash }, function(err, docs) {
         if (err) {
-            res.status(500).json({ error: 'Internal Server Error.' });
+            res.status(500)
+              .json({ error: 'Internal Server Error.' });
         }
         else {
             if (docs.length === 0) {
-                res.status(404).json({ error: 'URL not found.' });
+                res.status(404)
+                  .json({ error: 'URL not found.' });
             }
             else {
                 var url = docs[0].original_url;

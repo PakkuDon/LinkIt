@@ -7,8 +7,13 @@ $(document).ready(function() {
         $result.html('<img src="img/spinner.gif" />');
         $result.removeClass('alert-success alert-danger');
 
-        var url = $urlInput.val();
-        $.getJSON('api/shorten/' + url)
+        $.ajax({
+          url: '/api/urls',
+          method: 'POST',
+          data: {
+            url: $urlInput.val()
+          }
+        })
         .done(function(response) {
             $result.html('Shortened URL: ' + response.shortened_url);
             $result.addClass('alert-success');
