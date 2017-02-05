@@ -6,6 +6,15 @@
 2.  If I pass an invalid URL that doesn't follow the valid http://www.example.com format, the JSON response will contain an error instead.
 3.  When I visit that shortened URL, it will redirect me to my original link.
 
+## Languages / Technologies used
+- Node.js
+- Express
+- MongoDB
+- HTML
+- Bootstrap
+- JavaScript + jQuery
+- Gulp
+
 ## Example
 
 ### Usage
