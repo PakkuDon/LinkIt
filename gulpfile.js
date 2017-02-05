@@ -10,9 +10,17 @@ gulp.task('minify-client', function() {
         .pipe(gulp.dest('./public/js'));
 });
 
-gulp.task('watch-files', function() {
-  gulp.watch('client/**/*.js', ['minify-client']);
+gulp.task('styles', function() {
+    gulp.src(['client/**/*.css'])
+        .pipe(concat('style.css'))
+        .pipe(autoprefixer())
+        .pipe(gulp.dest('./public/css'));
 });
 
-gulp.task('default', ['minify-client']);
-gulp.task('watch', ['minify-client', 'watch-files']);
+gulp.task('watch-files', function() {
+    gulp.watch('client/**/*.js', ['minify-client']);
+    gulp.watch('client/**/*.css', ['styles']);
+});
+
+gulp.task('default', ['minify-client', 'styles']);
+gulp.task('watch', ['minify-client', 'styles', 'watch-files']);
