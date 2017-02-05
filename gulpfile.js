@@ -10,7 +10,9 @@ gulp.task('minify-client', function() {
         .pipe(gulp.dest('./public/js'));
 });
 
-gulp.task('default', ['minify-client']);
-gulp.task('watch', function() {
+gulp.task('watch-files', function() {
   gulp.watch('client/**/*.js', ['minify-client']);
 });
+
+gulp.task('default', ['minify-client']);
+gulp.task('watch', ['minify-client', 'watch-files']);
