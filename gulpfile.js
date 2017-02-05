@@ -4,7 +4,7 @@ var concat = require('gulp-concat');
 var autoprefixer = require('gulp-autoprefixer');
 
 gulp.task('minify-client', function() {
-    gulp.src('client.js')
+    gulp.src('client/app.js')
         .pipe(uglify())
         .pipe(concat('bundle.js'))
         .pipe(gulp.dest('./public/js'));
@@ -12,5 +12,5 @@ gulp.task('minify-client', function() {
 
 gulp.task('default', ['minify-client']);
 gulp.task('watch', function() {
-  gulp.watch('client.js', ['minify-client']);
+  gulp.watch('client/**/*.js', ['minify-client']);
 });
