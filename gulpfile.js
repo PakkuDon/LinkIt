@@ -4,7 +4,7 @@ var concat = require('gulp-concat');
 var autoprefixer = require('gulp-autoprefixer');
 
 gulp.task('vendor', function() {
-    return gulp.src([
+    gulp.src([
         'bower_components/jquery/dist/jquery.min.js'
     ])
         .pipe(uglify())
@@ -13,24 +13,27 @@ gulp.task('vendor', function() {
 });
 
 gulp.task('bundle', function() {
-    return gulp.src('client.js')
+    gulp.src('client.js')
         .pipe(uglify())
         .pipe(concat('bundle.js'))
         .pipe(gulp.dest('./public/js'));
 });
 
 gulp.task('client', function() {
-    return gulp.src('client.js')
+    gulp.src('client.js')
         .pipe(uglify())
         .pipe(concat('client.js'))
         .pipe(gulp.dest('./public/js'));
 });
 
 gulp.task('styles', function() {
-    return gulp.src('bower_components/bootstrap/dist/css/bootstrap.min.css')
+    gulp.src('bower_components/bootstrap/dist/css/bootstrap.min.css')
         .pipe(concat('style.css'))
         .pipe(autoprefixer())
         .pipe(gulp.dest('./public/css'));
 });
 
 gulp.task('default', ['vendor', 'bundle', 'client', 'styles']);
+gulp.task('watch', function() {
+  gulp.watch('client.js', ['client']);
+});
