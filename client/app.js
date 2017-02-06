@@ -4,7 +4,7 @@ $(document).ready(function() {
 
     $('#url-form').submit(function(e) {
         e.preventDefault();
-        $result.html('<img src="img/spinner.gif" />');
+        $result.html('<i class="fa fa-spinner spinner"></i>');
         $result.removeClass('alert-success alert-danger');
 
         $.ajax({
