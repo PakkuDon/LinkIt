@@ -5,17 +5,10 @@ if (process.env.NODE_ENV !== 'production') {
 var express = require('express');
 var bodyParser = require('body-parser');
 var shortHash = require('short-hash');
-var pg = require('pg-promise')();
+var db = require('./server/db');
 
 var app = express();
 app.set('port', 3000);
-
-var db = pg(process.env.DATABASE_URL || {
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASS
-});
 
 // Middleware
 app.use(bodyParser.json());
