@@ -1,0 +1,5 @@
+CREATE TABLE links (
+  id SERIAL4 PRIMARY KEY,
+  url TEXT,
+  hash VARCHAR(200)
+);
