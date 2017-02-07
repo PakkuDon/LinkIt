@@ -5,13 +5,17 @@ if (process.env.NODE_ENV !== 'production') {
 var express = require('express');
 var bodyParser = require('body-parser');
 var shortHash = require('short-hash');
-var monk = require('monk');
+var pg = require('pg-promise')();
 
 var app = express();
 app.set('port', 3000);
 
-var db = monk('localhost:27017/url-shortener');
-var urls = db.get('urls');
+var db = pg(process.env.DATABASE_URL || {
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASS
+});
 
 // Middleware
 app.use(bodyParser.json());
@@ -22,52 +26,75 @@ app.use(express.static('public'));
 
 // Index page
 app.get('/', function(req, res) {
-    res.status(200).sendFile(__dirname + '/index.html');
+  res.status(200).sendFile(__dirname + '/index.html');
 });
 
 // Return JSON result containing original URL and shortened result
 app.post('/api/urls/', function(req, res) {
-    var url = req.body.url;
-    var baseUrl = `${req.protocol}://${req.get('host')}/`
-    var hash = shortHash(url);
+  var url = req.body.url;
+  var baseUrl = `${req.protocol}://${req.get('host')}/`
+  var hash = shortHash(url);
 
-    urls.insert({
-        'original_url': url,
-        'hash': hash
-    }, function(err, result) {
-        if (err) {
-            res.status(500)
-              .json({
-                  error: 'Failed to shorten URL. Please try again.'
-              });
-        }
-        else {
+  db.query(`
+    SELECT *
+    FROM links
+    WHERE hash = $1
+    `, [hash])
+    .then(results => {
+      if (results.length > 0) {
+        res.status(200)
+          .json({
+            original: url,
+            shortened: baseUrl + hash
+          });
+      }
+      else {
+        db.query(`
+          INSERT INTO links (url, hash)
+          VALUES ($1, $2)
+          `, [url, hash])
+          .then(result => {
             res.status(200)
               .json({
-                  original_url: url,
-                  shortened_url: baseUrl + hash
-              });
-        }
+                original: url,
+                shortened: baseUrl + hash
+              })
+          })
+          .catch(error => {
+            console.error(error);
+            res.status(500)
+              .json({ error: 'Failed to shorten URL. Please try again' });
+          });
+      }
+    })
+    .catch(error => {
+      console.error(error);
+      res.status(500)
+        .json({ error: 'Failed to shorten URL. Please try again' });
     });
 });
 
 // Resolve short URL and redirect to original URL
 app.get('/:hash', function(req, res) {
-    urls.find({ hash: req.params.hash }, function(err, docs) {
-        if (err) {
-            res.status(500)
-              .json({ error: 'Internal Server Error.' });
-        }
-        else {
-            if (docs.length === 0) {
-                res.status(404)
-                  .json({ error: 'URL not found.' });
-            }
-            else {
-                var url = docs[0].original_url;
-                res.redirect(url);
-            }
-        }
+  db.query(`
+    SELECT *
+    FROM links
+    WHERE hash = $1
+    `, [req.params.hash])
+    .then(results => {
+      if (results.length === 0) {
+        res.status(404)
+          .json({ error: 'URL not found' });
+      }
+      else {
+        console.log(results);
+        res.redirect(results[0].url);
+      }
+    })
+    .catch(error => {
+      console.error(error);
+      res.status(500)
+        .json({ error: 'Internal Server Error.' });
     });
 });
 
