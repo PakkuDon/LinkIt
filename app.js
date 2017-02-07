@@ -18,12 +18,12 @@ app.use(bodyParser.urlencoded({
 app.use(express.static('public'));
 
 // Index page
-app.get('/', function(req, res) {
+app.get('/', (req, res) => {
   res.status(200).sendFile(__dirname + '/index.html');
 });
 
 // Return JSON result containing original URL and shortened result
-app.post('/api/urls/', function(req, res) {
+app.post('/api/urls/', (req, res) => {
   var url = req.body.url;
   var baseUrl = `${req.protocol}://${req.get('host')}/`
   var hash = shortHash(url);
@@ -68,7 +68,7 @@ app.post('/api/urls/', function(req, res) {
 });
 
 // Resolve short URL and redirect to original URL
-app.get('/:hash', function(req, res) {
+app.get('/:hash', (req, res) => {
   db.query(`
     SELECT *
     FROM links
@@ -91,6 +91,6 @@ app.get('/:hash', function(req, res) {
     });
 });
 
-app.listen(app.get('port'), function() {
+app.listen(app.get('port'), () => {
     console.log('Listening on port ' + app.get('port'));
 });
