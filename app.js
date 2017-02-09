@@ -8,7 +8,7 @@ var shortHash = require('short-hash');
 var db = require('./server/db');
 
 var app = express();
-app.set('port', 3000);
+app.set('port', process.env.PORT || 3000);
 
 // Middleware
 app.use(bodyParser.json());
