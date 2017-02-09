@@ -1,5 +1,11 @@
 # URL Shortener Microservice
 
+[Live demo on Heroku](http://linkit.herokuapp.com/)
+
+A URL shortener that produces not-so-short URLs. Shorter domain name never.
+
+Written as part of [Free Code Camp's](https://www.freecodecamp.com/) Back End Development curriculum.
+
 ## User Stories
 
 1.  I can pass a URL as a parameter and I will receive a shortened URL in the JSON response.
@@ -9,21 +15,38 @@
 ## Languages / Technologies used
 - Node.js
 - Express
-- MongoDB
+- PostgreSQL
 - HTML
-- Bootstrap
 - JavaScript + jQuery
 - Gulp
 
-## Example
+## Installation instructions
+```
+Clone repo
+npm install
+npm run build
+npm start
+```
 
-### Usage
+## NPM scripts
+```
+npm start       # Start application
+npm run dev     # Start application using nodemon
+npm run build   # Compile assets
+npm run watch   # Compile assets and watch for changes
+```
 
-`http://localhost:3000/api/shorten/https://www.freecodecamp.com`  
-
-### Result
-
-`{"original_url":"https://www.freecodecamp.com","shortened_url":"http://localhost:3000/ec2fed04"}`
+## Usage
+- Either navigate to main page and enter URL via form
+- Or
+  1. Send post request to `/api/urls` with `url` parameter
+  2. Example response
+  ```
+  {
+    "original": "http://linkit.herokuapp.com/",
+    "shortened": "http://localhost:3000/297f4bb"
+  }
+  ```
 
 * * *
 
