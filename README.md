@@ -1,4 +1,4 @@
-# URL Shortener Microservice
+# LinkIt
 
 [Live demo on Heroku](http://linkit.herokuapp.com/)
 
