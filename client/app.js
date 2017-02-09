@@ -15,7 +15,8 @@ $(document).ready(function() {
           }
         })
         .done(function(response) {
-            $result.html('Shortened URL: ' + response.shortened);
+            $result.html('Shortened URL: '
+              + '<a href="' + response.shortened + '">' + response.shortened + '</a>');
             $result.addClass('alert-success');
         })
         .fail(function(response) {
