@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
+    "build": "gulp",
     "watch": "gulp watch"
   },
   "keywords": [],
@@ -15,14 +16,14 @@
     "body-parser": "^1.16.0",
     "dotenv": "^4.0.0",
     "express": "^4.13.4",
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^3.1.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-uglify": "^1.5.4",
     "pg-promise": "^5.5.6",
     "short-hash": "^1.0.0"
   },
   "devDependencies": {
-    "gulp": "^3.9.1",
-    "gulp-autoprefixer": "^3.1.0",
-    "gulp-concat": "^2.6.0",
-    "gulp-uglify": "^1.5.3",
     "nodemon": "^1.11.0"
   }
 }
